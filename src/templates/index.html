@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<header>
+  <meta charset="utf-8">
+  <script src="{{ url_for('static', filename='axios.min.js') }}"></script>
+  <script>
+    window.onload = function () {
+      let previewDom = document.getElementById("preview");
+
+      document.getElementById("file").onchange = e => {
+        debugger
+        let file = e.target.files[0]
+        // use FileReader to load image and show preview of the image
+        let fileReader = new FileReader();
+        fileReader.onload = e => {
+          previewDom.src = e.target.result;
+        };
+        fileReader.readAsDataURL(file);
+        let formData = new FormData()
+        formData.append('upload_file', file, file.name)
+        let config = {
+          headers: {'content-Type': 'multipart/form-data'}
+        }
+        axios.post('/predict', formData, config)
+          .then(response => {
+            let data = response.data.data
+            if (data) {
+              document.getElementById('result').innerText = 'class:' + data.class + ', score:' + data.score
+            }
+          })
+      }
+    }
+  </script>
+</header>
+<body>
+<div>
+  <img id="preview" style="width: 500px;height: 500px;">
+</div>
+<input type="file" accept="image/*" name="file" id="file"/>
+<div id="result"></div>
+
+</body>
+</html>
