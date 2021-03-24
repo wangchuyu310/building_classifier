@@ -3,6 +3,7 @@
 .idea
 
 
-
+/src/upload
 *.jpg
 *.png
+*.jpeg
